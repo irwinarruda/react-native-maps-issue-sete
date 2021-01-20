@@ -32,7 +32,7 @@ class Index extends React.Component {
                 enableHighAccuracy: true,
                 maximumAge: 1000,
             }
-        )
+        );
     };
 
     handleGravarRotaPress() {
@@ -47,7 +47,7 @@ class Index extends React.Component {
         this.setState({
             buttonChange: true,
         }); 
-    }
+    };
 
     render() {
         return (
@@ -77,7 +77,7 @@ class Index extends React.Component {
                 </View>
             </View>
         );
-    }
+    };
 }
 
 export default Index;
