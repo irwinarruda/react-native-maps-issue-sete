@@ -7,10 +7,12 @@ class Index extends React.Component {
         region: {
             latitude: -16.6782432,
             longitude: -49.2530005,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitudeDelta: 0.00922,
+            longitudeDelta: 0.00421,
         },
-        buttonChange: true
+        buttonChange: true,
+        watchID: null,
+        nowCoords: []
     };
 
     async componentDidMount() {
@@ -20,8 +22,8 @@ class Index extends React.Component {
                     region: {
                         latitude,
                         longitude,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
+                        latitudeDelta: 0.00922,
+                        longitudeDelta: 0.00421,
                     }
                 });
                 console.log("GeoLocalização Encontrada com Sucesso");
@@ -35,17 +37,34 @@ class Index extends React.Component {
         );
     };
 
-    handleGravarRotaPress() {
-        console.log(this.state);
+    async handleGravarRotaPress() {
+        let watchPositionID = navigator.geolocation.watchPosition(
+            (params) => {
+                this.setState({
+                    nowCoords: [...this.state.nowCoords, params.coords]
+                });
+                console.log(params);
+            }, 
+            (err) => console.error(err), 
+            {
+                timeout: 2000, 
+                enableHightAccuracy: true, 
+                maximunAge: 1000,
+                distanceFilter: 2,        
+            }
+        );
         this.setState({
             buttonChange: false,
+            watchID: watchPositionID,
         });
         
     };
 
     handlePararGravacaoPress() {
+        if(this.state.watchID) navigator.geolocation.clearWatch(this.state.watchID);
         this.setState({
             buttonChange: true,
+            watchID: null,
         }); 
     };
 
@@ -64,7 +83,8 @@ class Index extends React.Component {
                     />
                 </View>
                 <View style={styles.buttonContainer}>
-                    {this.state.buttonChange? 
+                    {
+                        this.state.buttonChange? 
                         <Button 
                             title='Gravar Rota' 
                             onPress={() => this.handleGravarRotaPress()}

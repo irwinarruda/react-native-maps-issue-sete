@@ -13,3 +13,9 @@ https://pt-br.reactjs.org/docs/react-component.html
 https://reactnative.dev/docs/geolocation
  - Parâmetros para MapView
 https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md
+ -GeoJSON
+https://github.com/react-native-maps/react-native-maps/blob/master/docs/geojson.md
+https://geojson.org/geojson-spec.html
+ - Uso do react-native-maps
+https://medium.com/@princessjanf/react-native-maps-with-direction-from-current-location-ab1a371732c2
+https://medium.com/@fbiobcsouza/como-usar-a-geolocaliza%C3%A7%C3%A3o-no-react-native-979bc922cd77
