@@ -19,7 +19,7 @@ class Index extends React.Component {
             {latitude: 37.3999999, longitude: -122.051},
             {latitude: 37.38, longitude: -122.040},
         ],
-        walkedCoordsGeoJson: [[37.4219983, -122.084], [37.4150009, -122.073], [37.40, -122.062], [37.3999999, -122.051], [37.38, -122.040]],
+        walkedCoordsGeoJson: [[[37.4219983, -122.084], [37.4150009, -122.073]], [[37.40, -122.062], [37.3999999, -122.051]], [[37.38, -122.040], [37.33, -122.035]]],
     };
     
     async componentDidMount() {
@@ -99,12 +99,12 @@ class Index extends React.Component {
                                     type: 'Feature',
                                     properties: {},
                                     geometry: {
-                                        type: 'LineString',
+                                        type: 'MultiLineString',
                                         coordinates: this.state.walkedCoordsGeoJson
                                     }
                                 }]
                             }}
-                            strokeColor="red"
+                            strokeColor="blue"
                             fillColor="green"
                             strokeWidth={3}
                             zIndex={1000}
