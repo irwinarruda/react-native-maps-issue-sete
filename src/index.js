@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-maps';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
 
 class Index extends React.Component {
     state = {
@@ -10,6 +10,7 @@ class Index extends React.Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
         },
+        buttonChange: true
     };
 
     async componentDidMount() {
@@ -32,16 +33,48 @@ class Index extends React.Component {
                 maximumAge: 1000,
             }
         )
+    };
+
+    handleGravarRotaPress() {
+        console.log(this.state);
+        this.setState({
+            buttonChange: false,
+        });
+        
+    };
+
+    handlePararGravacaoPress() {
+        this.setState({
+            buttonChange: true,
+        }); 
     }
+
     render() {
         return (
             <View style={styles.container}>
-                <MapView 
-                    style={styles.map}
-                    region={this.state.region}
-                    showsUserLocation
-                    loadingEnabled
-                />
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{fontSize: 20, fontWeight: 'bold', textDecorationLine: 'underline'}}>Gerador de Trajeto GPX</Text>
+                </View>
+                <View style={styles.mapContainer}>
+                    <MapView 
+                        style={styles.map}
+                        region={this.state.region}
+                        showsUserLocation
+                        loadingEnabled
+                    />
+                </View>
+                <View style={styles.buttonContainer}>
+                    {this.state.buttonChange? 
+                        <Button 
+                            title='Gravar Rota' 
+                            onPress={() => this.handleGravarRotaPress()}
+                        />:
+                        <Button 
+                            title='Parar Gravação' 
+                            onPress={() => this.handlePararGravacaoPress()}
+                        />
+                    }         
+                </View>
             </View>
         );
     }
@@ -54,11 +87,23 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        paddingTop: 60,
+        paddingBottom: 50,
+    },
+    mapContainer: {
+        borderRadius: 7,
+        borderWidth: 5,
+        borderColor: '#0394fc',
+        resizeMode: 'cover',
+        width: Dimensions.get('window').width - 30,
+        height: Dimensions.get('window').height / 1.8,
     },
     map: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
+        width: '100%',
+        height: '100%',
+        paddingVertical: 15,
+        borderRadius: 1000
     },
 });
 

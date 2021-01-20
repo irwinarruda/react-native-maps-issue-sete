@@ -2,6 +2,10 @@
 
 Esse repositório serve para registar meu processo de entedimento e produção de uma feature para o applicativo [SETE MOBILE](https://github.com/marcosroriz/sete-mobile)
 
+Descrição: 
+
+É desejado que o usuário possa criar a rota com o aplicativo móvel usando sua localização. Assim, a tarefa consiste em criar uma rotina que ao usuário apertar um botão inicia-se a construção do trajeto. Ao pressionar parar termina-se a construção do trajeto. O trajeto deve ser exportado no formato GPX.
+
 ## Links úteis
  - Componentes de Classe React
 https://pt-br.reactjs.org/docs/react-component.html
