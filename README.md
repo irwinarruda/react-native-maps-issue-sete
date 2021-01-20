@@ -19,3 +19,4 @@ https://geojson.org/geojson-spec.html
  - Uso do react-native-maps
 https://medium.com/@princessjanf/react-native-maps-with-direction-from-current-location-ab1a371732c2
 https://medium.com/@fbiobcsouza/como-usar-a-geolocaliza%C3%A7%C3%A3o-no-react-native-979bc922cd77
+https://medium.com/nerdzao/utilizando-rotas-com-a-google-maps-api-no-react-native-69a05a434ab5

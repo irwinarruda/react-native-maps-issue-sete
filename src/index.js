@@ -1,5 +1,5 @@
 import React from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Geojson, Polyline } from 'react-native-maps';
 import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
 
 class Index extends React.Component {
@@ -12,9 +12,16 @@ class Index extends React.Component {
         },
         buttonChange: true,
         watchID: null,
-        nowCoords: []
+        walkedCoordsPolyline: [
+            {latitude: 37.4219983, longitude: -122.084},
+            {latitude: 37.4150009, longitude: -122.073},
+            {latitude: 37.40, longitude: -122.062},
+            {latitude: 37.3999999, longitude: -122.051},
+            {latitude: 37.38, longitude: -122.040},
+        ],
+        walkedCoordsGeoJson: [[37.4219983, -122.084], [37.4150009, -122.073], [37.40, -122.062], [37.3999999, -122.051], [37.38, -122.040]],
     };
-
+    
     async componentDidMount() {
         navigator.geolocation.getCurrentPosition(
             ({coords: {latitude, longitude}}) => {
@@ -37,13 +44,16 @@ class Index extends React.Component {
         );
     };
 
-    async handleGravarRotaPress() {
+    handleGravarRotaPress() {
+        /* this.setState({
+            walkedCoordsGeoJson: []
+        }); */
         let watchPositionID = navigator.geolocation.watchPosition(
             (params) => {
                 this.setState({
-                    nowCoords: [...this.state.nowCoords, params.coords]
+                    walkedCoordsGeoJson: [...this.state.walkedCoordsGeoJson, [params.coords.latitude, params.coords.longitude]]
                 });
-                console.log(params);
+                console.log([params.coords.latitude, params.coords.longitude]);
             }, 
             (err) => console.error(err), 
             {
@@ -80,7 +90,31 @@ class Index extends React.Component {
                         region={this.state.region}
                         showsUserLocation
                         loadingEnabled
-                    />
+                        
+                    >
+                        <Geojson 
+                            geojson={{
+                                type: 'FeatureCollection',
+                                features: [{
+                                    type: 'Feature',
+                                    properties: {},
+                                    geometry: {
+                                        type: 'LineString',
+                                        coordinates: this.state.walkedCoordsGeoJson
+                                    }
+                                }]
+                            }}
+                            strokeColor="red"
+                            fillColor="green"
+                            strokeWidth={3}
+                            zIndex={1000}
+                        />
+                        <Polyline 
+                            coordinates={this.state.walkedCoordsPolyline}
+                            strokeColor="red"
+                            strokeWidth={3}
+                        />
+                    </MapView>
                 </View>
                 <View style={styles.buttonContainer}>
                     {
@@ -127,3 +161,6 @@ const styles = StyleSheet.create({
     },
 });
 
+/* rotateEnabled={false}
+                        scrollEnabled={false}
+                        zoomEnabled={false} */
