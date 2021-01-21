@@ -1,6 +1,7 @@
 import React from 'react';
-import MapView, { Geojson, Polyline } from 'react-native-maps';
+import MapView, { Geojson } from 'react-native-maps';
 import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
+
 
 class Index extends React.Component {
     state = {
@@ -11,21 +12,14 @@ class Index extends React.Component {
             longitudeDelta: 0.00421,
         },
         buttonChange: true,
-        watchID: null,
-        walkedCoordsPolyline: [
-            {latitude: 37.4219983, longitude: -122.084},
-            {latitude: 37.4150009, longitude: -122.073},
-            {latitude: 37.40, longitude: -122.062},
-            {latitude: 37.3999999, longitude: -122.051},
-            {latitude: 37.38, longitude: -122.040},
-        ],
-        walkedCoordsGeoJson: [[[37.4219983, -122.084], [37.4150009, -122.073]], [[37.40, -122.062], [37.3999999, -122.051]], [[37.38, -122.040], [37.33, -122.035]]],
+        watch_id: null,
+        walkedCoordsGeoJson: [],
     };
     
     async componentDidMount() {
         navigator.geolocation.getCurrentPosition(
             ({coords: {latitude, longitude}}) => {
-                this.setState({
+                this.setState({      
                     region: {
                         latitude,
                         longitude,
@@ -45,37 +39,47 @@ class Index extends React.Component {
     };
 
     handleGravarRotaPress() {
-        /* this.setState({
+        this.setState({
             walkedCoordsGeoJson: []
-        }); */
+        });
         let watchPositionID = navigator.geolocation.watchPosition(
             (params) => {
                 this.setState({
-                    walkedCoordsGeoJson: [...this.state.walkedCoordsGeoJson, [params.coords.latitude, params.coords.longitude]]
+                    walkedCoordsGeoJson: [...this.state.walkedCoordsGeoJson, [params.coords.longitude, params.coords.latitude]],
+                    region: {
+                        latitude: params.coords.latitude,
+                        longitude: params.coords.longitude,
+                        latitudeDelta: 0.00922,
+                        longitudeDelta: 0.00421,
+                    }
                 });
-                console.log([params.coords.latitude, params.coords.longitude]);
+                console.log(params);
             }, 
             (err) => console.error(err), 
             {
                 timeout: 2000, 
                 enableHightAccuracy: true, 
                 maximunAge: 1000,
-                distanceFilter: 2,        
+                distanceFilter: 1,        
             }
         );
         this.setState({
             buttonChange: false,
-            watchID: watchPositionID,
+            watch_id: watchPositionID,
         });
         
     };
 
     handlePararGravacaoPress() {
-        if(this.state.watchID) navigator.geolocation.clearWatch(this.state.watchID);
+        if(this.state.watch_id) navigator.geolocation.clearWatch(this.state.watch_id);
         this.setState({
             buttonChange: true,
-            watchID: null,
+            watch_id: null,
         }); 
+    };
+
+    handleExportarRotaPress() {
+
     };
 
     render() {
@@ -89,8 +93,7 @@ class Index extends React.Component {
                         style={styles.map}
                         region={this.state.region}
                         showsUserLocation
-                        loadingEnabled
-                        
+                        loadingEnabled  
                     >
                         <Geojson 
                             geojson={{
@@ -99,20 +102,14 @@ class Index extends React.Component {
                                     type: 'Feature',
                                     properties: {},
                                     geometry: {
-                                        type: 'MultiLineString',
+                                        type: 'LineString',
                                         coordinates: this.state.walkedCoordsGeoJson
                                     }
                                 }]
                             }}
-                            strokeColor="blue"
+                            strokeColor="#a83291"
                             fillColor="green"
-                            strokeWidth={3}
-                            zIndex={1000}
-                        />
-                        <Polyline 
-                            coordinates={this.state.walkedCoordsPolyline}
-                            strokeColor="red"
-                            strokeWidth={3}
+                            strokeWidth={5}
                         />
                     </MapView>
                 </View>
@@ -126,8 +123,18 @@ class Index extends React.Component {
                         <Button 
                             title='Parar Gravação' 
                             onPress={() => this.handlePararGravacaoPress()}
+                            color='#ff262d'
                         />
-                    }         
+                    }  
+                    {
+                        this.state.walkedCoordsGeoJson.length > 0 && this.state.buttonChange? 
+                        <Button 
+                            title='Exportar rota'
+                            color='#54e397'
+                            onPress={() => this.handleExportarRotaPress()}
+                        />:
+                        null
+                    }
                 </View>
             </View>
         );
@@ -150,17 +157,18 @@ const styles = StyleSheet.create({
         borderWidth: 5,
         borderColor: '#0394fc',
         resizeMode: 'cover',
-        width: Dimensions.get('window').width - 30,
-        height: Dimensions.get('window').height / 1.8,
+        width: Dimensions.get('window').width - 20,
+        height: Dimensions.get('window').height / 1.5,
     },
     map: {
         width: '100%',
         height: '100%',
-        paddingVertical: 15,
+        paddingVertical: 10,
         borderRadius: 1000
     },
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+    },  
 });
-
-/* rotateEnabled={false}
-                        scrollEnabled={false}
-                        zoomEnabled={false} */
