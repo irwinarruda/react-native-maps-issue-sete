@@ -18,11 +18,11 @@ class Index extends React.Component {
     
     async componentDidMount() {
         navigator.geolocation.getCurrentPosition(
-            (props) => {
+            (params) => {
                 this.setState({      
                     region: {
-                        latitude: props.coords.latitude,
-                        longitude: props.coords.longitude,
+                        latitude: params.coords.latitude,
+                        longitude: params.coords.longitude,
                         latitudeDelta: 0.00922,
                         longitudeDelta: 0.00421,
                     }
