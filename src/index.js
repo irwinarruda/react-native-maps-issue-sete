@@ -18,11 +18,11 @@ class Index extends React.Component {
     
     async componentDidMount() {
         navigator.geolocation.getCurrentPosition(
-            ({coords: {latitude, longitude}}) => {
+            (props) => {
                 this.setState({      
                     region: {
-                        latitude,
-                        longitude,
+                        latitude: props.coords.latitude,
+                        longitude: props.coords.longitude,
                         latitudeDelta: 0.00922,
                         longitudeDelta: 0.00421,
                     }
@@ -108,7 +108,6 @@ class Index extends React.Component {
                                 }]
                             }}
                             strokeColor="#a83291"
-                            fillColor="green"
                             strokeWidth={5}
                         />
                     </MapView>
