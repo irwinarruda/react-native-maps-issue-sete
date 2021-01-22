@@ -142,7 +142,7 @@ class Index extends React.Component {
                         />
                     }  
                     {
-                        this.state.walkedCoordsGps.length > 0 && this.state.buttonChange && this.state.gpxString.length === 0? 
+                        this.state.walkedCoordsGps.length > 0 && this.state.buttonChange && this.state.gpxString.length > 0? 
                         <Button 
                             title='Exportar rota'
                             color='#fc03e8'
