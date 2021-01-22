@@ -6,6 +6,16 @@ Descrição:
 
 É desejado que o usuário possa criar a rota com o aplicativo móvel usando sua localização. Assim, a tarefa consiste em criar uma rotina que ao usuário apertar um botão inicia-se a construção do trajeto. Ao pressionar parar termina-se a construção do trajeto. O trajeto deve ser exportado no formato GPX.
 
+## Pacotes
+
+* Depois de já ter instalado o React Native (expo):
+  
+        $ yarn add react-native-maps
+        $ yarn add expo-file-system
+        $ yarn add expo-sharing
+        $ yarn add gps-to-gpx
+  
+
 ## Links úteis
  - Componentes de Classe React
    - https://pt-br.reactjs.org/docs/react-component.html
@@ -26,6 +36,8 @@ Descrição:
    - https://medium.com/nerdzao/utilizando-rotas-com-a-google-maps-api-no-react-native-69a05a434ab5
  - togpx
    - https://github.com/tyrasd/togpx
+ - Gps to Gpx 
+   - https://www.npmjs.com/package/gps-to-gpx
  - FileSystem
    - https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemdownloadasyncuri-fileuri-options
  - Sharing
