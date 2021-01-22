@@ -1,7 +1,9 @@
 import React from 'react';
-import MapView, { Geojson } from 'react-native-maps';
 import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
-
+import MapView, { Geojson } from 'react-native-maps';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import createGpx from 'gps-to-gpx';
 
 class Index extends React.Component {
     state = {
@@ -13,7 +15,8 @@ class Index extends React.Component {
         },
         buttonChange: true,
         watch_id: null,
-        walkedCoordsGeoJson: [],
+        walkedCoordsGps: [],
+        gpxString: ''
     };
     
     async componentDidMount() {
@@ -40,12 +43,18 @@ class Index extends React.Component {
 
     handleGravarRotaPress() {
         this.setState({
-            walkedCoordsGeoJson: []
+            walkedCoordsGps: []
         });
         let watchPositionID = navigator.geolocation.watchPosition(
             (params) => {
                 this.setState({
-                    walkedCoordsGeoJson: [...this.state.walkedCoordsGeoJson, [params.coords.longitude, params.coords.latitude]],
+                    walkedCoordsGps: [
+                        ...this.state.walkedCoordsGps,
+                        {
+                            latitude: params.coords.latitude,
+                            longitude: params.coords.longitude,
+                        }
+                    ],
                     region: {
                         latitude: params.coords.latitude,
                         longitude: params.coords.longitude,
@@ -53,14 +62,13 @@ class Index extends React.Component {
                         longitudeDelta: 0.00421,
                     }
                 });
-                console.log(params);
             }, 
             (err) => console.error(err), 
             {
                 timeout: 2000, 
                 enableHightAccuracy: true, 
                 maximunAge: 1000,
-                distanceFilter: 1,        
+                distanceFilter: 0.5,        
             }
         );
         this.setState({
@@ -70,16 +78,24 @@ class Index extends React.Component {
         
     };
 
-    handlePararGravacaoPress() {
+    async handlePararGravacaoPress() {
         if(this.state.watch_id) navigator.geolocation.clearWatch(this.state.watch_id);
         this.setState({
             buttonChange: true,
             watch_id: null,
+            gpxString: await createGpx(this.state.walkedCoordsGps)
         }); 
     };
 
-    handleExportarRotaPress() {
-
+    async handleExportarRotaPress() {
+        if(this.state.gpxString.length > 0) {
+            let fileUri = FileSystem.documentDirectory + 'GpxFile.gpx';
+            await FileSystem.writeAsStringAsync(fileUri, this.state.gpxString, { encoding: FileSystem.EncodingType.UTF8 });
+            await Sharing.shareAsync(fileUri);
+            this.setState({
+                gpxString: []
+            });
+        }
     };
 
     render() {
@@ -103,7 +119,7 @@ class Index extends React.Component {
                                     properties: {},
                                     geometry: {
                                         type: 'LineString',
-                                        coordinates: this.state.walkedCoordsGeoJson
+                                        coordinates: this.state.walkedCoordsGps.map(({latitude, longitude}) => [longitude, latitude])
                                     }
                                 }]
                             }}
@@ -121,16 +137,16 @@ class Index extends React.Component {
                         />:
                         <Button 
                             title='Parar Gravação' 
-                            onPress={() => this.handlePararGravacaoPress()}
+                            onPress={async () => await this.handlePararGravacaoPress()}
                             color='#ff262d'
                         />
                     }  
                     {
-                        this.state.walkedCoordsGeoJson.length > 0 && this.state.buttonChange? 
+                        this.state.walkedCoordsGps.length > 0 && this.state.buttonChange && this.state.gpxString.length === 0? 
                         <Button 
                             title='Exportar rota'
-                            color='#54e397'
-                            onPress={() => this.handleExportarRotaPress()}
+                            color='#fc03e8'
+                            onPress={async () => await this.handleExportarRotaPress()}
                         />:
                         null
                     }
