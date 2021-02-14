@@ -1,7 +1,6 @@
-import React from 'react';
-import Index from './src/index';
-
+import React from "react";
+import MainScreen from "./src/MainScreen";
 
 export default function App() {
-  return <Index/>
+    return <MainScreen />;
 }
